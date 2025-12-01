@@ -44,6 +44,12 @@
             bindings = <&kp DEL>;
         };
 
+        hanzen {
+            timeout-ms = <50>;
+            key-positions = <6 7>;
+            bindings = <&kp JP_HANZEN>;
+        };
+
         eisu {
             timeout-ms = <50>;
             key-positions = <16 17>;
@@ -57,16 +63,26 @@
         };
     };
 
+    macros {
+        snp_tl: snp_tl {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &kp LGUI &kp LSHIFT>
+                     , <&macro_tap &kp S>
+                     , <&macro_release &kp LGUI &kp LSHIFT>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             bindings =  <
 &kp Q           &kp W           &kp E           &kp R           &kp T           &kp Y           &kp U           &kp I           &kp O       &kp P
-&mt LSHFT A     &kp S           &kp D           &kp F           &kp G           &kp H           &kp J           &kp K           &kp L       &mt RSHFT JP_COLON
+&mt LSHFT A     &kp S           &kp D           &kp F           &kp G           &kp H           &kp J           &kp K           &kp L       &mt RSHFT SEMI
 &mt LALT Z      &kp X           &kp C           &kp V           &kp B           &kp N           &kp M           &kp COMMA       &kp DOT     &mt RALT SLASH
-&none           &kp LGUI        &kp LCTRL       &lt 2 BSPC      &lt 3 ESC       &lt 4 RET       &lt 1 SPC       &kp RCTRL       &none       &none
-            >;           
+&snp_tl         &kp LGUI        &kp LCTRL       &lt 2 BSPC      &lt 3 BSPC       &kp SPC         &lt 1 RET       &kp RCTRL      &none       &mo 4
+            >;
         };       
 
         layer1 {
@@ -84,7 +100,7 @@
             bindings = <
 &none             &none             &none             &none             &none             &kp LC(LG(LEFT))  &none             &none             &kp LC(LG(RIGHT)) &none
 &kp LSHFT         &none             &none             &kp LC(LA(TAB))   &none             &kp LEFT          &kp DOWN          &kp UP            &kp RIGHT         &kp RSHFT
-&kp LALT          &none             &none             &kp LG(TAB)       &none             &none             &kp END           &kp HOME          &none             &kp RALT
+&kp LALT          &none             &none             &kp LG(TAB)       &none             &kp HOME          &kp END           &kp PG_UP         &kp PG_DN         &kp RALT
 &none             &none             &trans            &trans            &trans            &trans            &trans            &trans            &none             &none
             >;
         };
