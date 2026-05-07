@@ -1,0 +1,29 @@
+#pragma once
+#include <dt-bindings/zmk/keys.h>
+
+#define J_DQT       AT                  // "
+#define J_AMPS      CARET               // &
+#define J_SQT       AMPERSAND           // '
+#define J_EQUAL     UNDER               // =
+#define J_CARET     EQUAL               // ^
+#define J_YEN       0x89                // ¥
+#define J_PLUS      COLON               // +
+#define J_TILDE     PLUS                // ~
+#define J_PIPE      LS(0x89)            // |
+#define J_AT        LEFT_BRACKET        // @
+#define J_COLON     SINGLE_QUOTE        // :
+#define J_ASTRK     DOUBLE_QUOTES       // *
+#define J_GRAVE     LEFT_BRACE          // `
+#define J_UNDER     LS(0x87)            // _
+#define J_LBKT      RIGHT_BRACKET       // [
+#define J_RBKT      BACKSLASH           // ]
+#define J_LPAR      ASTERISK            // (
+#define J_RPAR      LEFT_PARENTHESIS    // )
+#define J_LBRC      RIGHT_BRACE         // {
+#define J_RBRC      PIPE                // }
+#define J_KANA      LANGUAGE_1          // かな
+#define J_EISU      LANGUAGE_2          // 英数
+#define J_HANZEN    GRAVE               // 半角/全角
+
+#define CWL         LC(LG(LEFT))        // CTRL+WIN+LEFT
+#define CWR         LC(LG(RIGHT))       // CTRL+WIN+RIGHT

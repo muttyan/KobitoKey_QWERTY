@@ -3,76 +3,399 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
+#include "my_defines.dtsi"
 
 / {
+    /* ========================================
+     * カスタムビヘイビア定義
+     * ======================================== */
+    behaviors {
+        /* モッドタップ: 長押しで修飾キー、タップで通常キー */
+        mt: mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+    
+    /* ========================================
+     * キーコンボ定義（同時押しで別のキーを発火）
+     * ======================================== */
     combos {
         compatible = "zmk,combos";
-
-        combo_eisu {
+        
+        /* 13 + 16 同時押し → 半角（英数） */
+        eisu {
             timeout-ms = <50>;
-            key-positions = <12 13>;
-            bindings = <&kp LANG2>;
+            key-positions = <13 16>;
+            bindings = <&kp J_EISU>;
         };
 
-        combo_kana {
+        /* 12 + 17 同時押し → 全角（かな） */
+        kana2 {
             timeout-ms = <50>;
-            key-positions = <16 17>;
-            bindings = <&kp LANG1>;
+            key-positions = <12 17>;
+            bindings = <&kp J_KANA>;
         };
 
-        combo_esc {
+        /* 11 + 18 同時押し → 半角/全角切り替え */
+        hanzen {
             timeout-ms = <50>;
-            key-positions = <0 1>;
+            key-positions = <11 18>;
+            bindings = <&kp J_HANZEN>;
+        };
+
+        /* 11 + 13 同時押し → ESC */
+        esc_left {
+            timeout-ms = <50>;
+            key-positions = <11 13>;
             bindings = <&kp ESC>;
         };
 
-        combo_tab {
+        /* 16 + 18 同時押し → ESC */
+        esc_right {
             timeout-ms = <50>;
-            key-positions = <10 11>;
+            key-positions = <16 18>;
+            bindings = <&kp ESC>;
+        };
+
+        /* 12 + 13 同時押し → Tab */
+        tab_left {
+            timeout-ms = <50>;
+            key-positions = <12 13>;
             bindings = <&kp TAB>;
         };
+
+        /* 16 + 17 同時押し → Tab */
+        tab_right {
+            timeout-ms = <50>;
+            key-positions = <16 17>;
+            bindings = <&kp TAB>;
+        };
+
+        /* 13 + 14 同時押し → _ (アンダースコア) */
+        underscore_left {
+            timeout-ms = <50>;
+            key-positions = <13 14>;
+            bindings = <&kp J_UNDER>;
+        };
+
+        /* 15 + 16 同時押し → - (ハイフン) */
+        hyphen_right {
+            timeout-ms = <50>;
+            key-positions = <15 16>;
+            bindings = <&kp MINUS>;
+        };
+
+        /* 23 + 24 同時押し → ? (クエスチョン) */
+        question_left {
+            timeout-ms = <50>;
+            key-positions = <23 24>;
+            bindings = <&kp QMARK>;
+        };
+
+        /* 3 + 4 同時押し → ! (エクスクラメーション) */
+        exclamation_left {
+            timeout-ms = <50>;
+            key-positions = <3 4>;
+            bindings = <&kp EXCL>;
+        };
+
+        /* 5 + 6 同時押し → @ (アットマーク) */
+        at_right {
+            timeout-ms = <50>;
+            key-positions = <5 6>;
+            bindings = <&kp J_AT>;
+        };
+
+        /* 22 + 23 同時押し → Delete */
+        del_left {
+            timeout-ms = <50>;
+            key-positions = <22 23>;
+            bindings = <&kp DEL>;
+        };
+
+        /* 26 + 27 同時押し → Delete */
+        del_right {
+            timeout-ms = <50>;
+            key-positions = <26 27>;
+            bindings = <&kp DEL>;
+        };
+
+        /* 21 + 22 同時押し → マウスボタン4（進む） */
+        mouse_forward_left {
+            timeout-ms = <50>;
+            key-positions = <21 22>;
+            bindings = <&mkp MB5>;
+        };
+
+        /* 27 + 28 同時押し → マウスボタン4（進む） */
+        mouse_forward_right {
+            timeout-ms = <50>;
+            key-positions = <27 28>;
+            bindings = <&mkp MB5>;
+        };
+
+        /* 3 + 13 同時押し → 左クリック */
+        left_click_alt_left {
+            timeout-ms = <50>;
+            key-positions = <3 13>;
+            bindings = <&mkp LCLK>;
+        };
+
+        /* 6 + 16 同時押し → 左クリック */
+        left_click_alt_right {
+            timeout-ms = <50>;
+            key-positions = <6 16>;
+            bindings = <&mkp LCLK>;
+        };
+
+        /* 2 + 12 同時押し → 右クリック */
+        right_click_alt_left {
+            timeout-ms = <50>;
+            key-positions = <2 12>;
+            bindings = <&mkp RCLK>;
+        };
+
+        /* 7 + 17 同時押し → 右クリック */
+        right_click_alt_right {
+            timeout-ms = <50>;
+            key-positions = <7 17>;
+            bindings = <&mkp RCLK>;
+        };
+
+        /* 1 + 11 同時押し → 中クリック */
+        middle_click_alt_left {
+            timeout-ms = <50>;
+            key-positions = <1 11>;
+            bindings = <&mkp MCLK>;
+        };
+
+        /* 8 + 18 同時押し → 中クリック */
+        middle_click_alt_right {
+            timeout-ms = <50>;
+            key-positions = <8 18>;
+            bindings = <&mkp MCLK>;
+        };
+
+        /* 13 + 23 同時押し → 戻るボタン */
+        back_alt_left {
+            timeout-ms = <50>;
+            key-positions = <13 23>;
+            bindings = <&mkp MB4>;
+        };
+
+        /* 16 + 26 同時押し → 戻るボタン */
+        back_alt_right {
+            timeout-ms = <50>;
+            key-positions = <16 26>;
+            bindings = <&mkp MB4>;
+        };
+
+        /* 12 + 22 同時押し → 進むボタン */
+        forward_alt_left {
+            timeout-ms = <50>;
+            key-positions = <12 22>;
+            bindings = <&mkp MB5>;
+        };
+
+        /* 17 + 27 同時押し → 進むボタン */
+        forward_alt_right {
+            timeout-ms = <50>;
+            key-positions = <17 27>;
+            bindings = <&mkp MB5>;
+        };
+
+        /* 11 + 21 同時押し → スクリーンショット */
+        screenshot_left {
+            timeout-ms = <50>;
+            key-positions = <11 21>;
+            bindings = <&snp_tl>;
+        };
+
+        /* 18 + 28 同時押し → スクリーンショット */
+        screenshot_right {
+            timeout-ms = <50>;
+            key-positions = <18 28>;
+            bindings = <&snp_tl>;
+        };
+
+        /* 8 + 9 同時押し → Layer5 (Setting)トグル */
+        setting_mode {
+            timeout-ms = <50>;
+            key-positions = <8 9>;
+            bindings = <&tog 5>;
+        };
+
+        /* 0 + 1 同時押し → Layer 1（代替配列レイヤー）トグル */
+        toggle_alt_layout {
+            timeout-ms = <50>;
+            key-positions = <0 1>;
+            bindings = <&tog 1>;
+        };
+
+        /* 30 + 31 同時押し → ゲームモード切替 */
+        toggle_game_mode {
+            timeout-ms = <50>;
+            key-positions = <30 31>;
+            bindings = <&tog 7>;
+        };
+
+        /* 32 + 33 同時押し → Layer 11（ウィンドウ移動レイヤー） */
+        window_move_left {
+            timeout-ms = <50>;
+            key-positions = <32 33>;
+            bindings = <&mo 11>;
+        };
+
+        /* 36 + 37 同時押し → Layer 11（ウィンドウ移動レイヤー） */
+        window_move_right {
+            timeout-ms = <50>;
+            key-positions = <36 37>;
+            bindings = <&mo 11>;
+        };
+
+    };
+
+    /* ========================================
+     * マクロ定義
+     * ======================================== */
+    macros {
+        /* Windowsスクリーンショット（Win + Shift + S） */
+        snp_tl: snp_tl {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &kp LGUI &kp LSHIFT>
+                     , <&macro_tap &kp S>
+                     , <&macro_release &kp LGUI &kp LSHIFT>;
+        };
+        
     };
 
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
-            bindings = <
-&kp Q      &kp W     &kp E     &kp R        &kp T      &kp Y     &kp U        &kp I      &kp O      &kp P
-&kp A      &kp S     &kp D     &kp F        &kp G      &kp H     &kp J        &kp K      &kp L      &kp SEMI
-&kp Z      &kp X     &kp C     &kp V        &kp B      &kp N     &kp M        &kp COMMA  &kp DOT    &kp APOS
-&kp LSHFT  &kp LALT  &kp LCMD  &lt 2 SPACE  &kp LCTRL  &kp BSPC  &lt 1 ENTER  &kp RSHFT  &kp RSHFT  &mt LALT SLASH
+            bindings =  <
+&lt 10 Q      &kp W         &kp E         &kp R         &kp T         &kp Y         &kp U         &kp I         &kp O         &lt 10 P
+&lt 8 A       &lt 4 S       &lt 3 D       &lt 2 F       &kp G         &kp H         &lt 2 J       &lt 3 K       &lt 4 L       &lt 8 SEMI
+&lt 9 Z       &kp X         &kp C         &lt 3 V       &kp B         &kp N         &kp M         &kp COMMA     &kp DOT       &lt 9 SLASH
+&none         &kp LGUI      &mt LCTRL RET &mt LSHFT SPC &mt LALT BSPC &mt RALT BSPC &mt RSHFT SPC &mt RCTRL RET &kp RGUI      &none
             >;
         };
 
         layer1 {
-            label = "NUMBER";
+            label = "ONIK_LAYOUT";
             bindings = <
-&kp N0     &kp N1  &kp N2  &kp N3     &trans  &kp MINUS  &trans     &kp UP    &trans     &trans
-&kp EQUAL  &kp N4  &kp N5  &kp N6     &trans  &kp PLUS   &kp LEFT   &kp DOWN  &kp RIGHT  &trans
-&trans     &kp N7  &kp N8  &kp N9     &trans  &kp ASTRK  &kp SLASH  &kp LBKT  &kp RBKT   &trans
-&trans     &trans  &trans  &kp LSHFT  &trans  &trans     &trans     &trans    &trans     &trans
+&lt 10 Q      &kp L           &kp H           &kp C           &kp F           &kp P           &kp B           &kp U           &kp COMMA       &lt 10 DOT
+&lt 8 A       &lt 4 N         &lt 3 R         &lt 2 S         &kp W           &kp G           &lt 2 T         &lt 3 E         &lt 4 O         &lt 8 I
+&lt 9 MINUS   &kp Z           &kp Y           &lt 3 M         &kp V           &kp J           &kp K           &kp D           &kp J_DQT       &lt 9 X
+&none         &kp LGUI        &mt LCTRL RET   &mt LSHFT SPC   &mt LALT BSPC   &mt RALT BSPC   &mt RSHFT SPC   &mt RCTRL RET   &kp RGUI        &none
             >;
         };
 
         layer2 {
-            label = "FUNCTION";
+            label = "SYMBOL";
             bindings = <
-&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &kp F1   &kp F2   &kp F3  &kp F4  &kp F5
-&trans        &trans        &trans        &trans        &bt BT_CLR      &kp F6   &kp F7   &kp F8  &kp F9  &kp F10
-&trans        &trans        &trans        &trans        &bt BT_CLR_ALL  &kp F11  &kp F12  &trans  &trans  &trans
-&trans        &trans        &trans        &trans        &trans          &kp DEL  &trans   &trans  &trans  &trans
+&kp EXCL        &kp J_DQT       &kp HASH        &kp DLLR        &kp PRCNT       &kp J_AMPS      &kp J_SQT       &kp J_LPAR      &kp J_RPAR  &kp J_EQUAL
+&kp LSHFT       &kp J_PIPE      &kp J_TILDE     &kp J_UNDER     &kp QMARK       &kp J_AT        &kp MINUS       &kp J_LBRC      &kp J_RBRC  &kp J_COLON
+&kp LALT        &kp J_CARET     &kp J_GRAVE     &kp J_PLUS      &kp J_ASTRK     &kp LT          &kp GT          &kp J_LBKT      &kp J_RBKT  &kp J_YEN
+&none           &none           &trans          &trans          &trans          &trans          &trans          &trans          &none       &none
             >;
         };
 
         layer3 {
-            label = "MOUSE";
+            label = "NAVIGATION";
             bindings = <
-&trans     &trans  &trans    &trans    &trans  &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
-&trans     &trans  &trans    &trans    &trans  &trans  &trans    &trans    &trans    &trans
-&trans     &trans  &trans    &trans    &trans  &trans  &trans    &trans    &trans    &trans
-&kp LSHFT  &trans  &kp LCMD  &kp LALT  &to 0   &trans  &trans    &trans    &to 0     &kp RALT
+&none             &none             &none             &none             &none             &none             &none             &none             &none             &none
+&none             &none             &none             &kp LC(LA(TAB))   &none             &kp LEFT          &kp DOWN          &kp UP            &kp RIGHT         &kp RSHFT
+&none             &none             &none             &kp LG(TAB)       &none             &kp HOME          &kp END           &kp PG_UP         &kp PG_DN         &kp RALT
+&none             &none             &trans            &trans            &trans            &trans            &trans            &trans            &none             &none
+            >;
+        };
+
+        layer4 {
+            label = "NUMBER+FUNCTION";
+            bindings = <
+&kp F1          &kp F2          &kp F3          &kp F4          &kp F5          &kp KP_EQUAL    &kp KP_N7       &kp KP_N8       &kp KP_N9      &kp KP_PLUS
+&kp F6          &kp F7          &kp F8          &kp F9          &kp F10         &kp KP_DOT      &kp KP_N4       &kp KP_N5       &kp KP_N6      &kp KP_MINUS
+&kp LALT        &none           &none           &kp F11         &kp F12         &kp KP_N0       &kp KP_N1       &kp KP_N2       &kp KP_N3      &kp KP_MULTIPLY
+&none           &none           &trans          &trans          &trans          &trans          &trans          &trans          &kp KP_NUM     &kp KP_DIVIDE
+            >;
+        };
+
+        layer5 {
+            label = "Setting";
+            bindings = <
+&bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4    &none           &none           &none           &none       &none
+&none           &none           &none           &none           &bt BT_CLR      &none           &none           &none           &none       &none
+&none           &none           &none           &none           &bt BT_CLR_ALL  &none           &none           &none           &none       &none
+&none           &none           &trans          &trans          &trans          &trans          &trans          &trans          &none       &none
+            >;
+        };
+
+        layer6 {
+            label = "SCROLL_R";
+            bindings = <
+&trans          &trans          &trans          &trans          &trans          &trans          &kp CWL             &kp CWR             &trans      &trans
+&trans          &trans          &trans          &trans          &trans          &trans          &mkp MB4            &mkp MB5            &trans      &trans
+&trans          &trans          &trans          &trans          &trans          &trans          &trans              &trans              &trans      &trans
+&trans          &trans          &trans          &trans          &trans          &trans          &trans              &trans              &trans      &trans
+            >;
+        };
+
+        layer7 {
+            label = "GAME_MODE";
+            bindings = <
+&kp Q   &kp W   &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P
+&kp A   &kp S   &kp D     &kp F     &kp G     &kp H     &mkp LCLK &mkp MCLK &mkp RCLK &kp SEMI
+&kp Z   &kp X   &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp BACKSLASH
+&trans  &trans  &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+            >;
+        };
+
+        layer8 {
+            label = "SWAP_TB";
+            bindings = <
+&none &none    &none    &none  &none     &none    &none    &none  &none     &none
+&none &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
+&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+            >;
+        };
+
+        layer9 {
+            label = "SLOW_TB";
+            bindings = <
+&none &none    &none    &none  &none     &none    &none    &none  &none     &none
+&none &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
+&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+            >;
+        };
+
+        layer10 {
+            label = "SWAP_SLOW_TB";
+            bindings = <
+&none &none    &none    &none  &none     &none    &none    &none  &none     &none
+&none &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
+&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+            >;
+        };
+
+        layer11 {
+            label = "WINDOW_MOVE";
+            bindings = <
+&none &none &none            &none             &none &none  &none            &none             &none &none
+&none &none &kp LG(RC(LEFT)) &kp LG(RC(RIGHT)) &none &none  &kp LG(LC(LEFT)) &kp LG(LC(RIGHT)) &none &none
+&none &none &none            &none             &none &none  &none            &none             &none &none
+&none &none &none            &none             &none &none  &none            &none             &none &none
             >;
         };
     };
 };
+

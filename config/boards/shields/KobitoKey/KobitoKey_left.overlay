@@ -1,104 +1,220 @@
-#include "kobitokey.dtsi"
-#include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <input/processors.dtsi>
-#include <input/processors/sensor_rotation.dtsi>
+#include "kobitokey.dtsi"          // キーボード本体の共通定義（スイッチ配列や基本設定）を読み込み
+#include <zephyr/dt-bindings/input/input-event-codes.h>   // INPUT_EV_REL, INPUT_REL_X などの入力イベント定数
+#include <input/processors.dtsi>                          // ZMK/ZIP の入力プロセッサ定義
+#include <input/processors/sensor_rotation.dtsi>          // センサ回転補正用プロセッサ定義
 
-&xiao_serial { status = "disabled"; };
+/* ==================================================
+ * トラックボール感度設定（ここを変更すると全体に反映）
+ * ================================================== */
+// マウス感度: MOUSE_MULTIPLIER / MOUSE_DIVISOR 倍（例: 9/10 = 90%）
+#define MOUSE_MULTIPLIER 8
+#define MOUSE_DIVISOR 10
 
+// スクロール感度: SCROLL_MULTIPLIER / SCROLL_DIVISOR 倍（例: 1/8 = 12.5%）
+#define SCROLL_MULTIPLIER 1
+#define SCROLL_DIVISOR 25
+
+// 低速マウス感度: SLOW_MOUSE_MULTIPLIER / MOUSE_DIVISOR 倍（例: 3/10 = 30%）
+#define SLOW_MOUSE_MULTIPLIER 3
+
+// 低速スクロール感度: SLOW_SCROLL_MULTIPLIER / SLOW_SCROLL_DIVISOR 倍（例: 1/50 = 2%）
+#define SLOW_SCROLL_MULTIPLIER 1
+#define SLOW_SCROLL_DIVISOR 100
+
+/* XIAO の UART(シリアル)を無効化：ピンを他用途(SPIなど)で使うため */
+&xiao_serial { 
+    status = "disabled"; 
+};
+
+/* --- SPI0 のピン割り当て設定 --- */
 &pinctrl {
+    /* 通常動作時の SPI0 ピン設定 */
     spi0_default: spi0_default {
         group1 {
+            /* 
+             * SPIM_SCK  : P0.05 を SCK に使用
+             * SPIM_MOSI : P0.04 を MOSI に使用
+             * SPIM_MISO : P0.04 を MISO に使用（ハード構成に合わせた設定）
+             */
             psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                     <NRF_PSEL(SPIM_MISO, 0, 4)>;
         };
     };
+
+    /* スリープ時の SPI0 ピン設定（低消費電力用） */
     spi0_sleep: spi0_sleep {
         group1 {
             psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                     <NRF_PSEL(SPIM_MISO, 0, 4)>;
-            low-power-enable;
+            low-power-enable;   // スリープ時にピンを低消費電力状態にする
         };
-    };
+    }; 
 };
 
+/* --- SPI0 本体 + 左手トラックボール(PMW3610) の設定 --- */
 &spi0 {
-    status = "okay";
-    compatible = "nordic,nrf-spim";
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
+    status = "okay";                // SPI0 を有効化
+    compatible = "nordic,nrf-spim"; // nRF 用 SPIM ドライバを使用
+    pinctrl-0 = <&spi0_default>;    // 通常時のピン設定
+    pinctrl-1 = <&spi0_sleep>;      // スリープ時のピン設定
     pinctrl-names = "default", "sleep";
-    cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+    cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>; // CS ピン: P0.09 アクティブ Low
 
+    /* 左手トラックボール本体 (PixArt PMW3610) の設定 */
     tb_left: trackball@0 {
-        status = "okay";
-        compatible = "pixart,pmw3610";
-        reg = <0>;
-        spi-max-frequency = <2000000>;
-        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <200>; /* センサー感度 */
+        status = "okay";                 // デバイス有効
+        compatible = "pixart,pmw3610";   // PMW3610 用ドライバを使用
+        reg = <0>;                       // SPI アドレス（CS ライン上の ID）
+        spi-max-frequency = <2000000>;   // SPI 最大クロック 2MHz
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; // 割り込みピン: P0.02
+        cpi = <600>;                     // 解像度(CPI) 600
 
-
-        evt-type = <INPUT_EV_REL>;
-        x-input-code = <INPUT_REL_X>;
-        y-input-code = <INPUT_REL_Y>;
+        /* 相対座標入力として X/Y を報告する設定 */
+        evt-type = <INPUT_EV_REL>;      // 相対イベントタイプ
+        x-input-code = <INPUT_REL_X>;   // X 軸イベントコード
+        y-input-code = <INPUT_REL_Y>;   // Y 軸イベントコード
     };
 };
 
-/ {
+/* --- トラックボールの取り付け角度を補正する入力プロセッサ --- */
+ / {
+    /* 左手側トラックボール用：-24度回転させて座標を補正 */
     sensor_rotation_left: sensor-rotation-left {
         compatible = "zmk,input-processor-sensor-rotation";
         status = "okay";
         #input-processor-cells = <0>;
-        rotation-angle = <(-24)>;
+        rotation-angle = <(-24)>;    // 左手の物理取り付け角度に合わせて -24 度回転
     };
 
+    /* 右手側トラックボール用：+24度回転させて座標を補正 */
     sensor_rotation_right: sensor-rotation-right {
         compatible = "zmk,input-processor-sensor-rotation";
         #input-processor-cells = <0>;
         status = "okay";
-        rotation-angle = <24>;
+        rotation-angle = <24>;       // 右手の物理取り付け角度に合わせて +24 度回転
     };
 };
 
+/* =========================
+ * 左手トラックボールの動作定義
+ * ========================= */
 &tb_left_listener {
     status = "okay";
-    device = <&tb_left>;
+    device = <&tb_left>;    // 実際のセンサデバイス（tb_left）をこのリスナーに紐付け
 
+    /* デフォルト/Layer6: スクロールモード
+     *   - センサ回転補正
+     *   - XY スケーリング（感度調整）
+     *   - XY をスクロールイベントに変換
+     *   - Y 軸を反転（自然なスクロール方向にする）
+     */
     input-processors =
+        <&sensor_rotation_left>,
+        <&zip_xy_scaler SCROLL_MULTIPLIER SCROLL_DIVISOR>, // スクロール速度
+        <&zip_xy_to_scroll_mapper>,
+        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+
+    /* Layer6: マウスモード（右手スクロールレイヤー時、左手はポインタ動作）
+     *   → Layer6 で左手トラックボールをマウスとして使う
+     */
+    mouse_mode_left_layer6 {
+        layers = <6>;
+        input-processors =
             <&sensor_rotation_left>,
-            <&zip_x_scaler 0 1>,
-            <&zip_y_scaler 1 15>,
-            <&zip_xy_to_scroll_mapper>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
+            <&zip_xy_scaler MOUSE_MULTIPLIER MOUSE_DIVISOR>; // マウス速度
     };
 
-/ {
-  /omit-if-no-ref/ zip_temp_layer: zip_temp_layer {
-    compatible = "zmk,input-processor-temp-layer";
-    #input-processor-cells = <2>;
-    require-prior-idle-ms = <350>; /* キー押下後、何msオートマウスレイヤに入らないようにするか、誤爆防止 */
-  };
+    /* Layer8: 左右入れ替えモード（左手→右手の動き）
+     *   → 左手トラックボールが右手の動き（ポインタ）をする
+     */
+    swap_mode_left {
+        layers = <8>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_xy_scaler MOUSE_MULTIPLIER MOUSE_DIVISOR>;
+    };
+
+    /* Layer9: 低速モード（左手トラックボール）
+     *   → 左手トラックボールを低速スクロールとして使う（役割維持）
+     */
+    slow_mode_left {
+        layers = <9>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_xy_scaler SLOW_SCROLL_MULTIPLIER SLOW_SCROLL_DIVISOR>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
+
+    /* Layer10: 左右入れ替え + 低速モード（左手→右手の動き + 低速）
+     *   → 左手トラックボールが右手の動き（ポインタ）を低速でする
+     */
+    swap_slow_mode_left {
+        layers = <10>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_xy_scaler SLOW_MOUSE_MULTIPLIER MOUSE_DIVISOR>;
+    };
 };
 
+/* =========================
+ * 右手トラックボールの動作定義
+ * ========================= */
 &tb_right_listener {
     status = "okay";
 
+    /* デフォルト: マウスモード
+     *   - 右手トラックボールを常にマウスとして動作させる
+     */
     input-processors =
         <&sensor_rotation_right>,
-        <&zip_temp_layer 3 5000>; /* オートマウスレイヤーの指定とトラボ操作及びマウスボタン押下後に滞留する時間 */
-};
+        <&zip_xy_scaler MOUSE_MULTIPLIER MOUSE_DIVISOR>;
 
-&zip_temp_layer {
-    excluded-positions = <
-        6
-        7
-        8
-        30
-        32
-        33
-        39
-    >;
+    /* Layer6: スクロール（右手小指ホールドで入る）
+     *   → 右手をスクロール専用として使うモード
+     */
+    scroll_mode_right {
+        layers = <6>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_xy_scaler SCROLL_MULTIPLIER SCROLL_DIVISOR>,  // スクロール速度
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
+
+    /* Layer8: 左右入れ替えモード（右手→左手の動き）
+     *   → 右手トラックボールが左手の動き（スクロール）をする
+     */
+    swap_mode_right {
+        layers = <8>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_xy_scaler SCROLL_MULTIPLIER SCROLL_DIVISOR>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
+
+    /* Layer9: 低速モード（右手トラックボール）
+     *   → 右手トラックボールを低速ポインタとして使う（役割維持）
+     */
+    slow_mode_right {
+        layers = <9>;
+        input-processors =
+            <&sensor_rotation_right>,
+            <&zip_xy_scaler SLOW_MOUSE_MULTIPLIER MOUSE_DIVISOR>;
+    };
+
+    /* Layer10: 左右入れ替え + 低速モード（右手→左手の動き + 低速）
+     *   → 右手トラックボールが左手の動き（スクロール）を低速でする
+     */
+    swap_slow_mode_right {
+        layers = <10>;
+        input-processors =
+            <&sensor_rotation_left>,
+            <&zip_xy_scaler SLOW_SCROLL_MULTIPLIER SLOW_SCROLL_DIVISOR>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
 };
