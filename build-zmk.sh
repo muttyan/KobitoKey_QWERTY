@@ -38,8 +38,15 @@ CONTAINER_ENV_DIR="${CONTAINER_WORKSPACE}/zmk-env"
 CONTAINER_BUILD_ROOT="${CONTAINER_WORKSPACE}/zmk-build"
 CONTAINER_OUTPUT_DIR="${CONTAINER_BUILD_ROOT}/firmware"
 
+# build-zmk.sh が置かれているアプリディレクトリ（例: KobitoKey_QWERTY）を
+# コンテナ側のマウントパスに変換する。
+# ホスト側 WORKSPACE_DIR がコンテナの /workspaces にマウントされているため、
+# SCRIPT_DIR のフォルダ名だけをそのまま /workspaces 配下につなげればよい。
+APP_DIR_NAME="$(basename "${SCRIPT_DIR}")"
+CONTAINER_APP_DIR="${CONTAINER_WORKSPACE}/${APP_DIR_NAME}"
+
 BOARD="seeeduino_xiao_ble"
-CONFIG_DIR="${CONTAINER_ENV_DIR}/config"
+CONFIG_DIR="${CONTAINER_APP_DIR}/config"
 ZMK_APP_DIR="${CONTAINER_ENV_DIR}/zmk/app"
 
 GREEN='\033[0;32m'
@@ -111,6 +118,12 @@ check_requirements() {
   if [ ! -d "${ENV_DIR}/zmk/app" ]; then
     log_error "ZMK app ディレクトリが見つかりません: ${ENV_DIR}/zmk/app"
     log_error "先に setup-zmk-env.sh を実行してください。"
+    exit 1
+  fi
+
+  if [ ! -d "${SCRIPT_DIR}/config" ]; then
+    log_error "config ディレクトリが見つかりません: ${SCRIPT_DIR}/config"
+    log_error "keymap/overlay を置いた config フォルダが build-zmk.sh と同じ階層にあるか確認してください。"
     exit 1
   fi
 
@@ -191,6 +204,7 @@ main() {
   echo
   echo "workspace : ${WORKSPACE_DIR}"
   echo "env       : ${ENV_DIR}"
+  echo "config    : ${SCRIPT_DIR}/config  (container: ${CONFIG_DIR})"
   echo "output    : ${OUTPUT_DIR}"
   echo "image     : ${IMAGE}"
   echo
