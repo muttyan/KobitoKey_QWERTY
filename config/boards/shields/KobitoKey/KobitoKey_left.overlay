@@ -2,6 +2,7 @@
 #include <zephyr/dt-bindings/input/input-event-codes.h>   // INPUT_EV_REL, INPUT_REL_X などの入力イベント定数
 #include <input/processors.dtsi>                          // ZMK/ZIP の入力プロセッサ定義
 #include <input/processors/sensor_rotation.dtsi>          // センサ回転補正用プロセッサ定義
+#include "../../../my_defines.dtsi"                       // レイヤー番号などの名前付きdefine（.keymapと共有、config/直下に配置）
 
 /* ==================================================
  * トラックボール感度設定（ここを変更すると全体に反映）
@@ -120,7 +121,7 @@
      *   → Layer6 で左手トラックボールをマウスとして使う
      */
     mouse_mode_left_layer6 {
-        layers = <6>;
+        layers = <LAY_SCROLL_R>;
         input-processors =
             <&sensor_rotation_left>,
             <&zip_xy_scaler MOUSE_MULTIPLIER MOUSE_DIVISOR>; // マウス速度
@@ -130,7 +131,7 @@
      *   → 左手トラックボールが右手の動き（ポインタ）をする
      */
     swap_mode_left {
-        layers = <8>;
+        layers = <LAY_SWAP_TB>;
         input-processors =
             <&sensor_rotation_right>,
             <&zip_xy_scaler MOUSE_MULTIPLIER MOUSE_DIVISOR>;
@@ -140,7 +141,7 @@
      *   → 左手トラックボールを低速スクロールとして使う（役割維持）
      */
     slow_mode_left {
-        layers = <9>;
+        layers = <LAY_SLOW_TB>;
         input-processors =
             <&sensor_rotation_left>,
             <&zip_xy_scaler SLOW_SCROLL_MULTIPLIER SLOW_SCROLL_DIVISOR>,
@@ -152,7 +153,7 @@
      *   → 左手トラックボールが右手の動き（ポインタ）を低速でする
      */
     swap_slow_mode_left {
-        layers = <10>;
+        layers = <LAY_SWAP_SLOW_TB>;
         input-processors =
             <&sensor_rotation_right>,
             <&zip_xy_scaler SLOW_MOUSE_MULTIPLIER MOUSE_DIVISOR>;
@@ -176,7 +177,7 @@
      *   → 右手をスクロール専用として使うモード
      */
     scroll_mode_right {
-        layers = <6>;
+        layers = <LAY_SCROLL_R>;
         input-processors =
             <&sensor_rotation_right>,
             <&zip_xy_scaler SCROLL_MULTIPLIER SCROLL_DIVISOR>,  // スクロール速度
@@ -188,7 +189,7 @@
      *   → 右手トラックボールが左手の動き（スクロール）をする
      */
     swap_mode_right {
-        layers = <8>;
+        layers = <LAY_SWAP_TB>;
         input-processors =
             <&sensor_rotation_left>,
             <&zip_xy_scaler SCROLL_MULTIPLIER SCROLL_DIVISOR>,
@@ -200,7 +201,7 @@
      *   → 右手トラックボールを低速ポインタとして使う（役割維持）
      */
     slow_mode_right {
-        layers = <9>;
+        layers = <LAY_SLOW_TB>;
         input-processors =
             <&sensor_rotation_right>,
             <&zip_xy_scaler SLOW_MOUSE_MULTIPLIER MOUSE_DIVISOR>;
@@ -210,7 +211,7 @@
      *   → 右手トラックボールが左手の動き（スクロール）を低速でする
      */
     swap_slow_mode_right {
-        layers = <10>;
+        layers = <LAY_SWAP_SLOW_TB>;
         input-processors =
             <&sensor_rotation_left>,
             <&zip_xy_scaler SLOW_SCROLL_MULTIPLIER SLOW_SCROLL_DIVISOR>,

@@ -227,35 +227,17 @@
         setting_mode {
             timeout-ms = <50>;
             key-positions = <8 9>;
-            bindings = <&tog 5>;
+            bindings = <&tog LAY_SETTING>;
         };
 
-        /* 0 + 1 同時押し → Layer 1（代替配列レイヤー）トグル */
-        toggle_alt_layout {
-            timeout-ms = <50>;
-            key-positions = <0 1>;
-            bindings = <&tog 1>;
-        };
-
-        /* 30 + 31 同時押し → ゲームモード切替 */
+        /* 0 + 1 同時押し → Layer 1（GAME_MODE、旧layer7）トグル
+         * ※旧ONIK_LAYOUT用コンボを転用。layer1の中身をGAME_MODEに差し替えたため、
+         *   このコンボの役割もGAME_MODEのトグルに変更した。
+         */
         toggle_game_mode {
             timeout-ms = <50>;
-            key-positions = <30 31>;
-            bindings = <&tog 7>;
-        };
-
-        /* 32 + 33 同時押し → Layer 11（ウィンドウ移動レイヤー） */
-        window_move_left {
-            timeout-ms = <50>;
-            key-positions = <32 33>;
-            bindings = <&mo 11>;
-        };
-
-        /* 36 + 37 同時押し → Layer 11（ウィンドウ移動レイヤー） */
-        window_move_right {
-            timeout-ms = <50>;
-            key-positions = <36 37>;
-            bindings = <&mo 11>;
+            key-positions = <0 1>;
+            bindings = <&tog LAY_GAME>;
         };
 
     };
@@ -280,20 +262,20 @@
 
         default_layer {
             bindings =  <
-&lt 10 Q      &kp W         &kp E         &kp R         &kp T         &kp Y         &kp U         &kp I         &kp O         &lt 10 P
-&lt 8 A       &lt 4 S       &lt 3 D       &lt 2 F       &kp G         &kp H         &lt 2 J       &lt 3 K       &lt 4 L       &lt 8 SEMI
-&lt 9 Z       &kp X         &kp C         &lt 3 V       &kp B         &kp N         &kp M         &kp COMMA     &kp DOT       &lt 9 SLASH
-&none         &kp LGUI      &mt LCTRL RET &mt LSHFT SPC &mt LALT BSPC &mt RALT BSPC &mt RSHFT SPC &mt RCTRL RET &kp RGUI      &none
+&lt LAY_SWAP_SLOW_TB Q  &kp W              &kp E          &kp R             &kp T          &kp Y          &kp U             &kp I          &kp O              &lt LAY_SWAP_SLOW_TB P
+&lt LAY_SWAP_TB A       &lt LAY_NUMFUNC S  &lt LAY_NAV D  &lt LAY_SYMBOL F  &kp G          &kp H          &lt LAY_SYMBOL J  &lt LAY_NAV K  &lt LAY_NUMFUNC L  &lt LAY_SWAP_TB SEMI
+&lt LAY_SLOW_TB Z       &kp X              &kp C          &lt LAY_NAV V     &kp B          &kp N          &kp M             &kp COMMA      &kp DOT            &lt LAY_SLOW_TB SLASH
+&none                   &kp LGUI           &mt LCTRL RET  &mt LSHFT SPC     &mt LALT BSPC  &mt RALT BSPC  &mt RSHFT SPC     &mt RCTRL RET  &kp RGUI           &none
             >;
         };
 
         layer1 {
-            label = "ONIK_LAYOUT";
+            label = "GAME_MODE";
             bindings = <
-&lt 10 Q      &kp L           &kp H           &kp C           &kp F           &kp P           &kp B           &kp U           &kp COMMA       &lt 10 DOT
-&lt 8 A       &lt 4 N         &lt 3 R         &lt 2 S         &kp W           &kp G           &lt 2 T         &lt 3 E         &lt 4 O         &lt 8 I
-&lt 9 MINUS   &kp Z           &kp Y           &lt 3 M         &kp V           &kp J           &kp K           &kp D           &kp J_DQT       &lt 9 X
-&none         &kp LGUI        &mt LCTRL RET   &mt LSHFT SPC   &mt LALT BSPC   &mt RALT BSPC   &mt RSHFT SPC   &mt RCTRL RET   &kp RGUI        &none
+&kp Q   &kp W   &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P
+&kp A   &kp S   &kp D     &kp F     &kp G     &kp H     &mkp LCLK &mkp MCLK &mkp RCLK &kp SEMI
+&kp Z   &kp X   &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp BACKSLASH
+&trans  &trans  &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
             >;
         };
 
@@ -348,16 +330,6 @@
         };
 
         layer7 {
-            label = "GAME_MODE";
-            bindings = <
-&kp Q   &kp W   &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P
-&kp A   &kp S   &kp D     &kp F     &kp G     &kp H     &mkp LCLK &mkp MCLK &mkp RCLK &kp SEMI
-&kp Z   &kp X   &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp BACKSLASH
-&trans  &trans  &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
-            >;
-        };
-
-        layer8 {
             label = "SWAP_TB";
             bindings = <
 &none &none    &none    &none  &none     &none    &none    &none  &none     &none
@@ -367,7 +339,7 @@
             >;
         };
 
-        layer9 {
+        layer8 {
             label = "SLOW_TB";
             bindings = <
 &none &none    &none    &none  &none     &none    &none    &none  &none     &none
@@ -377,23 +349,13 @@
             >;
         };
 
-        layer10 {
+        layer9 {
             label = "SWAP_SLOW_TB";
             bindings = <
 &none &none    &none    &none  &none     &none    &none    &none  &none     &none
 &none &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
 &none &none    &none    &none  &none     &none    &none    &none   &none    &none
 &none &none    &none    &none  &none     &none    &none    &none   &none    &none
-            >;
-        };
-
-        layer11 {
-            label = "WINDOW_MOVE";
-            bindings = <
-&none &none &none            &none             &none &none  &none            &none             &none &none
-&none &none &kp LG(RC(LEFT)) &kp LG(RC(RIGHT)) &none &none  &kp LG(LC(LEFT)) &kp LG(LC(RIGHT)) &none &none
-&none &none &none            &none             &none &none  &none            &none             &none &none
-&none &none &none            &none             &none &none  &none            &none             &none &none
             >;
         };
     };
