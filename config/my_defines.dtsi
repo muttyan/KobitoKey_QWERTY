@@ -39,6 +39,7 @@
 #define LAY_NUMFUNC         4   // NUMBER+FUNCTION
 #define LAY_SETTING         5   // Setting
 #define LAY_SCROLL_R        6   // SCROLL_R
-#define LAY_SWAP_TB         7   // SWAP_TB
-#define LAY_SLOW_TB         8   // SLOW_TB
-#define LAY_SWAP_SLOW_TB    9   // SWAP_SLOW_TB
+#define LAY_NORMAL_TB       7   // NORMAL_TB
+#define LAY_SWAP_TB         8   // SWAP_TB
+#define LAY_SLOW_TB         9   // SLOW_TB
+#define LAY_SWAP_SLOW_TB   10   // SWAP_SLOW_TB
