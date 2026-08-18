@@ -48,34 +48,6 @@
             bindings = <&kp J_HANZEN>;
         };
 
-        /* 11 + 13 同時押し → ESC */
-        esc_left {
-            timeout-ms = <50>;
-            key-positions = <11 13>;
-            bindings = <&kp ESC>;
-        };
-
-        /* 16 + 18 同時押し → ESC */
-        esc_right {
-            timeout-ms = <50>;
-            key-positions = <16 18>;
-            bindings = <&kp ESC>;
-        };
-
-        /* 12 + 13 同時押し → Tab */
-        tab_left {
-            timeout-ms = <50>;
-            key-positions = <12 13>;
-            bindings = <&kp TAB>;
-        };
-
-        /* 16 + 17 同時押し → Tab */
-        tab_right {
-            timeout-ms = <50>;
-            key-positions = <16 17>;
-            bindings = <&kp TAB>;
-        };
-
         /* 13 + 14 同時押し → _ (アンダースコア) */
         underscore_left {
             timeout-ms = <50>;
@@ -111,31 +83,10 @@
             bindings = <&kp J_AT>;
         };
 
-        /* 22 + 23 同時押し → Delete */
-        del_left {
-            timeout-ms = <50>;
-            key-positions = <22 23>;
-            bindings = <&kp DEL>;
-        };
-
-        /* 26 + 27 同時押し → Delete */
-        del_right {
-            timeout-ms = <50>;
-            key-positions = <26 27>;
-            bindings = <&kp DEL>;
-        };
-
         /* 21 + 22 同時押し → マウスボタン4（進む） */
         mouse_forward_left {
             timeout-ms = <50>;
             key-positions = <21 22>;
-            bindings = <&mkp MB5>;
-        };
-
-        /* 27 + 28 同時押し → マウスボタン4（進む） */
-        mouse_forward_right {
-            timeout-ms = <50>;
-            key-positions = <27 28>;
             bindings = <&mkp MB5>;
         };
 
@@ -240,6 +191,38 @@
             bindings = <&tog LAY_GAME>;
         };
 
+        /* 16 + 17 同時押し（NUMBER+FUNCTIONレイヤー中のみ） → + */
+        numfunc_plus {
+            timeout-ms = <50>;
+            key-positions = <16 17>;
+            layers = <LAY_NUMFUNC>;
+            bindings = <&kp KP_PLUS>;
+        };
+
+        /* 17 + 18 同時押し（NUMBER+FUNCTIONレイヤー中のみ） → - */
+        numfunc_minus {
+            timeout-ms = <50>;
+            key-positions = <17 18>;
+            layers = <LAY_NUMFUNC>;
+            bindings = <&kp KP_MINUS>;
+        };
+
+        /* 26 + 27 同時押し（NUMBER+FUNCTIONレイヤー中のみ） → * */
+        numfunc_multiply {
+            timeout-ms = <50>;
+            key-positions = <26 27>;
+            layers = <LAY_NUMFUNC>;
+            bindings = <&kp KP_MULTIPLY>;
+        };
+
+        /* 27 + 28 同時押し（NUMBER+FUNCTIONレイヤー中のみ） → / */
+        numfunc_divide {
+            timeout-ms = <50>;
+            key-positions = <27 28>;
+            layers = <LAY_NUMFUNC>;
+            bindings = <&kp KP_DIVIDE>;
+        };
+
     };
 
     /* ========================================
@@ -265,7 +248,7 @@
 &lt LAY_SWAP_SLOW_TB Q  &kp W              &kp E          &kp R             &kp T          &kp Y          &kp U             &kp I          &kp O              &lt LAY_SWAP_SLOW_TB P
 &lt LAY_SWAP_TB A       &lt LAY_NUMFUNC S  &lt LAY_NAV D  &lt LAY_SYMBOL F  &kp G          &kp H          &lt LAY_SYMBOL J  &lt LAY_NAV K  &lt LAY_NUMFUNC L  &lt LAY_SWAP_TB SEMI
 &lt LAY_SLOW_TB Z       &kp X              &kp C          &lt LAY_NAV V     &kp B          &kp N          &kp M             &kp COMMA      &kp DOT            &lt LAY_SLOW_TB SLASH
-&none                   &kp LGUI           &mt LCTRL RET  &mt LSHFT SPC     &mt LALT BSPC  &mt RALT BSPC  &mt RSHFT SPC     &mt RCTRL RET  &kp RGUI           &none
+&mkp LCLK               &kp LGUI           &mt LCTRL RET  &mt LSHFT SPC     &mt LALT BSPC  &mt RALT BSPC  &mt RSHFT SPC     &mt RCTRL RET  &kp RGUI           &mkp LCLK
             >;
         };
 
@@ -273,7 +256,7 @@
             label = "GAME_MODE";
             bindings = <
 &kp Q   &kp W   &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P
-&kp A   &kp S   &kp D     &kp F     &kp G     &kp H     &mkp LCLK &mkp MCLK &mkp RCLK &kp SEMI
+&kp A   &kp S   &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SEMI
 &kp Z   &kp X   &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp BACKSLASH
 &trans  &trans  &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
             >;
@@ -285,7 +268,7 @@
 &kp EXCL        &kp J_DQT       &kp HASH        &kp DLLR        &kp PRCNT       &kp J_AMPS      &kp J_SQT       &kp J_LPAR      &kp J_RPAR  &kp J_EQUAL
 &kp LSHFT       &kp J_PIPE      &kp J_TILDE     &kp J_UNDER     &kp QMARK       &kp J_AT        &kp MINUS       &kp J_LBRC      &kp J_RBRC  &kp J_COLON
 &kp LALT        &kp J_CARET     &kp J_GRAVE     &kp J_PLUS      &kp J_ASTRK     &kp LT          &kp GT          &kp J_LBKT      &kp J_RBKT  &kp J_YEN
-&none           &none           &trans          &trans          &trans          &trans          &trans          &trans          &none       &none
+&mkp RCLK       &none           &mt LCTRL ESC   &mt LSHFT TAB   &mt LALT DEL    &mt RALT DEL    &mt RSHFT TAB   &mt RCTRL ESC   &none       &mkp RCLK
             >;
         };
 
@@ -295,17 +278,17 @@
 &none             &none             &none             &none             &none             &none             &none             &none             &none             &none
 &none             &none             &none             &kp LC(LA(TAB))   &none             &kp LEFT          &kp DOWN          &kp UP            &kp RIGHT         &kp RSHFT
 &none             &none             &none             &kp LG(TAB)       &none             &kp HOME          &kp END           &kp PG_UP         &kp PG_DN         &kp RALT
-&none             &none             &trans            &trans            &trans            &trans            &trans            &trans            &none             &none
+&mkp MB4          &none             &trans            &trans            &trans            &trans            &trans            &trans            &none             &mkp MB4
             >;
         };
 
         layer4 {
             label = "NUMBER+FUNCTION";
             bindings = <
-&kp F1          &kp F2          &kp F3          &kp F4          &kp F5          &kp KP_EQUAL    &kp KP_N7       &kp KP_N8       &kp KP_N9      &kp KP_PLUS
-&kp F6          &kp F7          &kp F8          &kp F9          &kp F10         &kp KP_DOT      &kp KP_N4       &kp KP_N5       &kp KP_N6      &kp KP_MINUS
-&kp LALT        &none           &none           &kp F11         &kp F12         &kp KP_N0       &kp KP_N1       &kp KP_N2       &kp KP_N3      &kp KP_MULTIPLY
-&none           &none           &trans          &trans          &trans          &trans          &trans          &trans          &kp KP_NUM     &kp KP_DIVIDE
+&kp F1          &kp F2          &kp F3          &kp F4          &kp F5          &kp EQUAL       &kp N7          &kp N8          &kp N9         &none
+&kp F6          &kp F7          &kp F8          &kp F9          &kp F10         &kp KP_DOT      &kp N4          &kp N5          &kp N6         &none
+&none           &none           &none           &kp F11         &kp F12         &kp N0          &kp N1          &kp N2          &kp N3         &none
+&mkp MB5        &none           &trans          &trans          &trans          &trans          &trans          &trans          &kp KP_NUM     &mkp MB5
             >;
         };
 
@@ -332,32 +315,31 @@
         layer7 {
             label = "SWAP_TB";
             bindings = <
-&none &none    &none    &none  &none     &none    &none    &none  &none     &none
-&none &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
-&none &none    &none    &none  &none     &none    &none    &none   &none    &none
-&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
+&none &kp LEFT &kp UP &kp DOWN &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
             >;
         };
 
         layer8 {
             label = "SLOW_TB";
             bindings = <
-&none &none    &none    &none  &none     &none    &none    &none  &none     &none
-&none &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
-&none &none    &none    &none  &none     &none    &none    &none   &none    &none
-&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
+&none &kp LEFT &kp UP &kp DOWN &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
             >;
         };
 
         layer9 {
             label = "SWAP_SLOW_TB";
             bindings = <
-&none &none    &none    &none  &none     &none    &none    &none  &none     &none
-&none &kp LEFT &kp DOWN &kp UP &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
-&none &none    &none    &none  &none     &none    &none    &none   &none    &none
-&none &none    &none    &none  &none     &none    &none    &none   &none    &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
+&none &kp LEFT &kp UP &kp DOWN &kp RIGHT &kp LEFT &kp DOWN &kp UP &kp RIGHT &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
+&none &none    &none  &none    &none     &none    &none    &none  &none     &none
             >;
         };
     };
 };
-
